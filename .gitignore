@@ -214,3 +214,6 @@ data/processed/*
 
 # Power BI local files
 dashboard/*.pbix
+
+# SQLTools' scratch query file
+*.session.sql
