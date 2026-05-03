@@ -1,0 +1,74 @@
+"""
+Loads FY2000-2019 SBA 7(a) FOIA CSV files into the sba.loans_raw table.
+
+Prerequisites:
+- .env file with DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
+- PostgreSQL database, sba schema, and loans_raw table created (run sql/*.sql files in order up through 03)
+- CSVs are stored in data/raw/
+
+Usage: python scripts/load_CSVs.py
+
+Notes: The 'asofdate' column is dropped because it contains a single snapshot date with no analytical value.
+revolver_status is converted from int to bool to match the table schema.
+Date columns use errors='coerce' so malformed dates become NULL.
+column_dtype overrides data types for columns where an inferred int dtype would remove leading zeros or potentially distort ID data.
+Re-running this script appends to existing data in the table. Truncate sba.loans_raw in Postgres before re-running to avoid duplicates.
+"""
+
+import os
+import pandas as pd
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+
+column_dtype = {
+    'l2locid':str,
+    'borrzip':str,
+    'bankfdicnumber':str,
+    'bankncuanumber':str,
+    'naicscode':str,
+    'franchisecode':str,
+    'bankzip':str,
+    'congressionaldistrict':str
+    }
+
+column_rename = {
+    'l2locid':'location_id', 'borrname':'borr_name', 'borrstreet':'borr_street', 'borrcity':'borr_city', 'borrstate':'borr_state', 'borrzip':'borr_zip',
+    'bankname':'bank_name', 'bankfdicnumber':'bank_fdic_number', 'bankncuanumber':'bank_ncua_number', 'bankstreet':'bank_street', 'bankcity':'bank_city', 
+    'bankstate':'bank_state', 'bankzip':'bank_zip', 'grossapproval':'gross_approval', 'sbaguaranteedapproval':'sba_guaranteed_approval', 'approvaldate':'approval_date', 
+    'approvalfiscalyear':'approval_fiscal_year', 'firstdisbursementdate':'first_disbursement_date', 'processingmethod':'processing_method',
+    'initialinterestrate':'initial_interest_rate', 'fixedorvariableinterestind':'fixed_or_variable_interest', 'terminmonths':'term_in_months', 'naicscode':'naics_code',
+    'naicsdescription':'naics_description', 'franchisecode':'franchise_code', 'franchisename':'franchise_name', 'projectcounty':'project_county', 'projectstate':'project_state',
+    'sbadistrictoffice':'sba_district_office', 'congressionaldistrict':'congressional_district', 'businesstype':'business_type', 'businessage':'business_age',
+    'loanstatus':'loan_status', 'paidinfulldate':'paid_in_full_date', 'chargeoffdate':'charge_off_date', 'grosschargeoffamount':'gross_charge_off_amount',
+    'revolverstatus':'revolver_status', 'jobssupported':'jobs_supported', 'collateralind':'collateral_ind', 'soldsecmrktind':'sold_secondary_mrkt'
+        }
+
+load_dotenv()
+host = os.getenv('DB_HOST')
+port = os.getenv('DB_PORT')
+name = os.getenv('DB_NAME')
+user = os.getenv('DB_USER')
+password = os.getenv('DB_PASSWORD')
+
+engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}")
+
+def load_csv(csv_path, engine):
+
+    csv = pd.read_csv(csv_path, encoding = 'utf-8', na_values = ['None'], dtype = column_dtype)
+    csv = csv.drop(columns=['asofdate'])
+    csv = csv.rename(columns=column_rename)
+
+    csv['approval_date'] = pd.to_datetime(csv['approval_date'], format='%m/%d/%Y', errors='coerce')
+    csv['charge_off_date'] = pd.to_datetime(csv['charge_off_date'], format='%m/%d/%Y', errors='coerce')
+    csv['first_disbursement_date'] = pd.to_datetime(csv['first_disbursement_date'], format='%m/%d/%Y', errors='coerce')
+    csv['paid_in_full_date'] = pd.to_datetime(csv['paid_in_full_date'], format='%m/%d/%Y', errors='coerce')
+    csv['revolver_status'] = csv['revolver_status'].astype(bool)
+
+    try:
+        csv.to_sql('loans_raw', engine, schema='sba', if_exists='append', index=False)
+        print(f"Loaded {len(csv)} rows from {csv_path}")
+    except Exception as e:
+        print(f"Load failed: {e}")
+
+load_csv('data/raw/foia-7a-fy2000-fy2009-as-of-251231.csv', engine)
+load_csv('data/raw/foia-7a-fy2010-fy2019-as-of-251231.csv', engine)
