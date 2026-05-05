@@ -1,5 +1,5 @@
 """
-Loads FY2000-2019 SBA 7(a) FOIA CSV files into the sba.loans_raw table.
+Loads FY2010-2019 SBA 7(a) FOIA CSV files into the sba.loans_raw table.
 
 Prerequisites:
 - .env file with DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
@@ -70,5 +70,4 @@ def load_csv(csv_path, engine):
     except Exception as e:
         print(f"Load failed: {e}")
 
-load_csv('data/raw/foia-7a-fy2000-fy2009-as-of-251231.csv', engine)
 load_csv('data/raw/foia-7a-fy2010-fy2019-as-of-251231.csv', engine)
