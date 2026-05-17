@@ -1,0 +1,16 @@
+SELECT  loan_id,
+        gross_approval,
+        approval_fiscal_year,
+        term_in_months,
+        revolver_status,
+        naics_code,
+        loan_status,
+        jobs_supported,
+        approval_date
+FROM sba.loans_raw
+WHERE approval_fiscal_year BETWEEN 2010 AND 2017
+    AND term_in_months BETWEEN 1 AND 324
+    AND jobs_supported <= 100
+    AND naics_code IS NOT NULL
+    AND loan_status IN ('PIF', 'CHGOFF')
+LIMIT 20;
