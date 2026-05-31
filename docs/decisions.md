@@ -13,3 +13,7 @@ FY2010-2017. Original time window for the project was FY2000-FY2019. This has be
 - Geography fields are being excluded since they will not be referred to in the analysis or by the model.
 - gross_approval, approval_fiscal_year, two-digit naics sector, term_in_months, and revolver_status will be used as features in the model.
 - No duplicates are being removed, as some of them may be parallel loans. Only 0.7% of the included data is affected by potential duplicates. Many duplicates are in the Transportation and Warehousing sector.
+
+## Priors Decisions
+- Grocery vs specialty store prior may be removed from the project due to complexity. This prior is currently deferred.
+- All remaining priors will be tested for accuracy.
