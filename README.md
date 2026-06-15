@@ -1,4 +1,7 @@
 # SBA 7(a) Loan Charge-off Risk Analysis
+## About
+I am a B2B Credit Analyst with experience analyzing companies and organizations of all sizes. I am building this project to demonstrate my domain knowledge alongside my capabilities with Python, SQL, and Power BI.
+
 ## Goal
 Determine which industries, loan sizes, and vintages have higher default rates than the portfolio average. Examine how default rates interact across these features with an emphasis on identifying which industries are most sensitive to loan size. Develop a logistic regression model to determine the predictive weight of each feature.
 
@@ -12,7 +15,7 @@ Original time window for the project was FY2000-FY2019. This has been changed to
 The 2010-2017 period is under consistent regulation and contains both a post-crisis recovery period and an expansionary period.
 
 ## Priors
-Overall, my expectation is that larger loan sizes will display higher default rates. I also believe that retail will carry high risk amongst the industries and experience high impact from loan size due to thin margins, high overhead, and fluctuating demand. Grocery stores will display more resilience than specialty stores. Construction is in a gray area; although they are likely to pay slow due to the nature of their work, I have not witnessed many defaults or bankruptcies from companies in this sector. Construction companies also likely correlate loan size with project payout size, so I expect both this industry's impact from loan size and overall default rate to be average.
+Overall, my expectation is that larger loan sizes will display higher default rates. I also believe that retail will carry high risk amongst the industries and experience high impact from loan size due to thin margins, high overhead, and fluctuating demand. Construction is in a gray area; although they are likely to pay slow due to the nature of their work, I have not witnessed many defaults or bankruptcies from companies in this sector. Construction companies also likely correlate loan size with project payout size, so I expect both this industry's impact from loan size and overall default rate to be average.
 
 ## Data
 SBA FOIA 7(a) loan-level CSV files from https://data.sba.gov/dataset/7-a-504-foia.
@@ -21,9 +24,11 @@ File: FY2010-FY2019, as-of date 2025-12-31. 545,751 total loans.
 SBA updates this data quarterly, so you may see some slight variation in your data compared to mine if you download the most recent dataset.
 
 ## Setup
-1. Run sql/01_create_database.sql, sql/02_create_schema.sql, and sql/03_create_table.sql against a local PostgreSQL instance.
+1. Run sql/01_create_database.sql, sql/02_create_schema.sql, and sql/03_create_table.sql against a local PostgreSQL instance in that order.
 2. Create a .env file with DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD.
 3. Run scripts/test_connection.py to verify the connection.
 4. Place FY2010-FY2019 CSV in data/raw/.
 5. Run scripts/load_CSVs.py.
 6. Run notebooks/01_data_validation.ipynb.
+7. Run sql/create_naics_sector_descriptions.sql followed by sql/create_view.sql.
+8. Run notebooks/02_exploratory_data_analysis.ipynb.
