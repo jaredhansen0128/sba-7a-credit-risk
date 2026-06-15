@@ -15,5 +15,9 @@ FY2010-2017. Original time window for the project was FY2000-FY2019. This has be
 - No duplicates are being removed, as some of them may be parallel loans. Only 0.7% of the included data is affected by potential duplicates. Many duplicates are in the Transportation and Warehousing sector.
 
 ## Priors Decisions
-- Grocery vs specialty store prior may be removed from the project due to complexity. This prior is currently deferred.
+- Grocery vs specialty store prior (which would have been updated to inelastic goods vs elastic goods retailers) is removed from the project to reduce complexity.
 - All remaining priors will be tested for accuracy.
+
+## Model Decisions
+gross_approval and naics_sector will be used in the model.
+approval_fiscal_year will not be used in the model since the view contains only loans that have terminated, artificially increasing the default rate as the vintage year becomes more recent since less loans have had enough time to be paid in full.
