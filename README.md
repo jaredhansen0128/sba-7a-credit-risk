@@ -1,6 +1,6 @@
 # SBA 7(a) Loan Charge-off Risk Analysis
 ## About
-I am a B2B Credit Analyst with experience analyzing companies and organizations of all sizes. I am building this project to demonstrate my domain knowledge alongside my capabilities with Python, SQL, and Power BI.
+I am a B2B Credit Analyst with experience analyzing companies and organizations of all sizes. I am building this project to demonstrate my domain knowledge alongside my capabilities with Python and SQL.
 
 ## Goal
 Determine which industries, loan sizes, and vintages have higher default rates than the portfolio average. Examine how default rates interact across these features with an emphasis on identifying which industries are most sensitive to loan size. Develop a logistic regression model to determine the predictive weight of each feature.
@@ -30,5 +30,6 @@ SBA updates this data quarterly, so you may see some slight variation in your da
 4. Place FY2010-FY2019 CSV in data/raw/.
 5. Run scripts/load_CSVs.py.
 6. Run notebooks/01_data_validation.ipynb.
-7. Run sql/create_naics_sector_descriptions.sql followed by sql/create_view.sql.
+7. Run sql/04_create_naics_sector_descriptions.sql followed by sql/05_create_view.sql.
 8. Run notebooks/02_exploratory_data_analysis.ipynb.
+9. Run sql/06_create_model_view.sql.
