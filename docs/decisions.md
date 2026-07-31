@@ -20,10 +20,12 @@ FY2010-2017. Original time window for the project was FY2000-FY2019. This has be
 
 ## Model Decisions
 - Logistic Regression is being used instead of XGBoost so that the coefficients can be evaluated.
-- gross_approval and naics_sector will be used in the model.
+- naics_sector will be used in the model.
+- gross_approval will be a feature, but transformed to log2 due to the data being right-skewed.
 - approval_fiscal_year will not be used in the model since the view contains only loans that have terminated, artificially increasing the default rate as the vintage year becomes more recent since less loans have had enough time to be paid in full.
 - term_in_months will be included and binned because it clusters at specific maturities and shows a sharp level of defaults at 60 months that a continuous slope can't capture. Bins are anchored to SBA maturity caps, such as 300 representing the max for real estate and 84 representing the max for revolving accounts.
 - The SQL view used for the model will be layered on the original view with the addition of collateral_ind.
+- VIF of 5 or higher will be used to determine whether there is notable overlap between features.
 
 ## Dashboard
 - The Power BI dashboard will no longer be included in this project to reduce complexity. 
