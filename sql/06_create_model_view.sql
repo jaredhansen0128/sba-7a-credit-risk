@@ -10,8 +10,7 @@ SELECT v.*,
               WHEN v.term_in_months BETWEEN 61 AND 84 THEN '61-84mo'
               WHEN v.term_in_months BETWEEN 85 AND 120 THEN '85-120mo'
               WHEN v.term_in_months BETWEEN 121 AND 240 THEN '121-240mo'
-              WHEN v.term_in_months BETWEEN 241 AND 300 THEN '241-300mo'
-              WHEN v.term_in_months BETWEEN 301 AND 324 THEN '301-324mo'
+              WHEN v.term_in_months BETWEEN 241 AND 324 THEN '241-324mo'
               END AS term_bin
 FROM sba.vw_loans_clean AS v
 JOIN sba.loans_raw AS r
