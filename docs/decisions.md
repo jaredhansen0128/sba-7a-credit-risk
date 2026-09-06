@@ -26,6 +26,21 @@ FY2010-2017. Original time window for the project was FY2000-FY2019. This has be
 - term_in_months will be included and binned because it clusters at specific maturities and shows a sharp level of defaults at 60 months that a continuous slope can't capture. Bins are anchored to SBA maturity caps, such as 300 representing the max for real estate and 84 representing the max for revolving accounts.
 - The SQL view used for the model will be layered on the original view with the addition of collateral_ind.
 - VIF of 5 or higher will be used to determine whether there is notable overlap between features.
+- Class-weighting and SMOTE are not used since it would shift predicted probabilities away from the portfolio mean. The calibration curve confirms the unweighted model produces well-calibrated probabilities.
+- The model is unpenalized since penalization would bias the coefficients toward zero, understating their effects and invalidating the standard errors.
+- The 241-324mo term_in_months bin was created from the 241-300 and 301-324 bins due to quasi-separation in the sparse 300-324mo bucket, which caused the model to fail to converge.
+- Reference categories:- Features and References:
+    - Log2-transformed gross_approval.
+        - No reference
+    - term_in_months split into 6 bins. 
+        - Ref: 61-84mo
+    - revolver_status. 
+        - Ref: non-revolver (0)
+    - collateral_ind. 
+        - Ref: unsecured (0)
+    - naics_sector_description.
+        - Ref: Construction
+- Confusion matrix is no longer in play since any threshold choice requires assumptions about the relative cost of false positives and false negatives, which the data doesn't support. AUC summarizes discrimination across all thresholds.
 
 ## Dashboard
 - The Power BI dashboard will no longer be included in this project to reduce complexity. 
