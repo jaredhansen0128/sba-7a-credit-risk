@@ -14,6 +14,8 @@
 
 - **Recommendations**: Tighter controls and pricing on Retail, collateral requirements where credit quality is uncertain or borderline, and stricter acceptance criteria plus reduced concentration in short-term loans.
 
+- **New Additions**: New SQL views/triggers/procedures are being added to drill deeper into findings. These findings will be discussed in the SQL Analysis section.
+
 ## About
 I am a B2B Credit Analyst working for a security firm that assesses the creditworthiness of small, medium, and large businesses/organizations. I am building this project to demonstrate how my domain knowledge can be augmented with and yield actionable outputs by using Python, SQL, and statistical modeling.
 
@@ -149,6 +151,12 @@ File: FY2010-FY2019, as-of date 2025-12-31. 545,751 total loans.
  - FY2018-FY2019 records are loaded but excluded from analysis in the SQL view (05_create_view.sql).
 SBA updates this data quarterly, so you may see some slight variation in your data compared to mine if you download the most recent dataset.
 
+## SQL Analysis
+1. **The short-term loan effect is not confounded with subprogram.** Short-term loans are most concentrated in FA$TRK (Small Loan Express) where they have a default rate of 17.43%, about 2ppts lower than the default rate across all short-term loans, 19.52%. Short-term loans also had substantially higher default rates (5ppts or more, typically in the double-digits) than the reference terms (61-84mo) in 10 of 12 subprogram groups, confirming the effect is spread across subprograms. If there was confounding, we'd expect a substantially higher default rate under FA$TRK while the rates under other subprograms sit closer to the reference's default rate.
+
+This data is marginal and not adjusted for loan size or sector. Data can be found by selecting all from sba.vw_shortterms_programs.
+
+
 ## Setup
 1. Run sql/01_create_database.sql, sql/02_create_schema.sql, and sql/03_create_table.sql against a local PostgreSQL instance in that order.
 2. Run pip install -r requirements.txt in the terminal.
@@ -161,3 +169,4 @@ SBA updates this data quarterly, so you may see some slight variation in your da
 9. Run notebooks/02_exploratory_data_analysis.ipynb.
 10. Run sql/06_create_model_view.sql.
 11. Run 03_logistic_regression_model.ipynb.
+12. Run 07_subprograms.sql.
