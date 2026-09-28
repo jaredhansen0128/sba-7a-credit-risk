@@ -154,8 +154,15 @@ SBA updates this data quarterly, so you may see some slight variation in your da
 ## SQL Analysis
 1. **The short-term loan effect is not confounded with subprogram.** Short-term loans are most concentrated in FA$TRK (Small Loan Express) where they have a default rate of 17.43%, about 2ppts lower than the default rate across all short-term loans, 19.52%. Short-term loans also had substantially higher default rates (5ppts or more, typically in the double-digits) than the reference terms (61-84mo) in 10 of 12 subprogram groups, confirming the effect is spread across subprograms. If there was confounding, we'd expect a substantially higher default rate under FA$TRK while the rates under other subprograms sit closer to the reference's default rate.
 
-This data is marginal and not adjusted for loan size or sector. Data can be found by selecting all from sba.vw_shortterms_programs.
+This data is marginal and not adjusted for loan size or sector. Data can be found by selecting all from sba.vw_shortterms_programs. (07_subprograms.sql)
 
+2. **Term confounds the marginal loan size effect.** Larger loans carry longer terms: loans under $100K sit mostly in 0-84mo, while loans with 241-324mo terms make up over half of the largest size decile, $864K-$5MM, with a loan count of 18,618. Since long term loans have lower default rates, this shift explains why default rates fell with loan size in the marginal EDA data. Short-term loans stay high-risk at every size (13.33% - 30.72%).
+
+The smallest loans are elevated within most term bins, and the pattern at larger sizes varies by term, which the model's log-linear loan size coefficient does not account for.
+
+Rates are marginal within each term bin. Chart color uses PowerNorm scale with gamma set to 0.6.
+
+![Size vs term bubble chart](image.png)
 
 ## Setup
 1. Run sql/01_create_database.sql, sql/02_create_schema.sql, and sql/03_create_table.sql against a local PostgreSQL instance in that order.
@@ -170,3 +177,5 @@ This data is marginal and not adjusted for loan size or sector. Data can be foun
 10. Run sql/06_create_model_view.sql.
 11. Run 03_logistic_regression_model.ipynb.
 12. Run 07_subprograms.sql.
+13. Run 08.size_x_term.sql.
+14. Run 04_size_term_heatmap.ipynb
