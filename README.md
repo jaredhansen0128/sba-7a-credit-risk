@@ -4,17 +4,17 @@
 
 - **Model**: Unpenalized logit on term length, loan size (log2), NAICS sector, revolver status, and collateral. Held-out AUC is 0.75, stable across 5 folds (0.745-0.757), and is well-calibrated.
 
-- **Term dominates charge-off risk**: Loans with terms of 60 months or less carry about 6x higher odds of default than the reference, 61-84mo terms, and a 19.5% default rate against the 7.5% portfolio average.
+- **Term dominates charge-off risk**: Loans with terms of 60 months or less carry about 6x higher odds of default than the reference, 61-84mo terms, and a 19.5% default rate against the 7.5% portfolio average. Subprograms are not confounded with terms.
 
 - **Secured loans are associated with ~34% lower default odds than unsecured**: Since collateral is typically required of weaker borrowers, that gap likely understates its protective value.
 
-- **Loan size impact on default rate has mixed signals**: Larger loans default less in the raw data, but the logit shows 11% higher odds per doubling of size once term and other features are held constant. Term likely drives the size effect in EDA.
+- **Loan size impact on default rate has mixed signals**: Larger loans default less in the marginal data, while the logit shows 11% higher odds per doubling of size once term and other features are held constant. Term length is the confounder which drives the opposite effect in the marginal data.
 
 - **Priors were recorded before analysis**: Retail's elevated risk was confirmed; the loan size and Construction priors were partly disconfirmed.
 
 - **Recommendations**: Tighter controls and pricing on Retail, collateral requirements where credit quality is uncertain or borderline, and stricter acceptance criteria plus reduced concentration in short-term loans.
 
-- **New Additions**: New SQL views/triggers/procedures are being added to drill deeper into findings. These findings will be discussed in the SQL Analysis section.
+- **Further Analyses**: Deeper analyses are being done in SQL with conclusions in the SQL Analysis section.
 
 ## About
 I am a B2B Credit Analyst working for a security firm that assesses the creditworthiness of small, medium, and large businesses/organizations. I am building this project to demonstrate how my domain knowledge can be augmented with and yield actionable outputs by using Python, SQL, and statistical modeling.
