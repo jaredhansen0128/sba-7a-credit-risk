@@ -42,6 +42,17 @@ FY2010-2017. Original time window for the project was FY2000-FY2019. This has be
         - Ref: Construction
 - Confusion matrix is no longer in play since any threshold choice requires assumptions about the relative cost of false positives and false negatives, which the data doesn't support. AUC summarizes discrimination across all thresholds.
 
-## Dashboard
-- The Power BI dashboard will no longer be included in this project to reduce complexity. 
-- A second project on cloud cost analysis will be created, which may feature a Power BI dashboard.
+## Vintage Curves
+- Population: All disbursed loans approved from FY2010-2019 (loan status is PIF, CHGOFF, or EXEMPT) instead of only terminal loans. CANCLD loans and COMMIT (undisbursed) loans are excluded.
+- Vintages: FY2010-2019. Fiscal years run from October through September.
+- Age: All completed quarters for each loan starting from approval date. Age starts at 0 and includes the wait before first disbursement (~58 days on average).
+- Data as-of date: 2025-12-31. All ages will end at this date.
+- Approval date will indicate which vintage a loan resides in.
+- CHGOFF loans with NULL charge off dates will be excluded (9 total).
+- Measures (cumulative gross charge-off rates; the data has no recoveries): 
+    - Count: Cumulative CHGOFF loans by age divided by all loans in the vintage (PIF + CHGOFF + EXEMPT).
+    - Lender-share dollars: Cumulative sum of (gross_charge_off_amount * lender share) divided by sum of (gross_approval * lender share) across all loans in the vintage. Lender share is 1 − (sba_guaranteed_approval / gross_approval), calculated for each loan.
+- Figure: Two side-by-side Seaborn line graphs (count, dollars), one line per vintage. Y = measures, X = Ages.
+- Priors:
+    1. FY2010's cumulative count rate at age 6 quarters is higher than at least 7 of the other 9 vintages.
+    2. For vintages with at least 40 quarters in age, at least 50% of the age-40 count rate is reached by age 20 as a result of the short-term loan effect on charge-off risk.
