@@ -1,3 +1,7 @@
+BEGIN;
+
+CREATE OR REPLACE VIEW sba.vc_spine AS
+
 WITH vintage_ends AS (
     SELECT approval_fiscal_year,
            DATE_TRUNC('month', MAX(approval_date)) AS vintage_last_month
@@ -24,4 +28,6 @@ SELECT a.approval_fiscal_year,
         a.age_months, 
         s.age
 FROM age_integers AS a
-CROSS JOIN LATERAL generate_series(0, (age_months / 3) - 1) AS s(age)
+CROSS JOIN LATERAL generate_series(0, (age_months / 3) - 1) AS s(age);
+
+COMMIT;
