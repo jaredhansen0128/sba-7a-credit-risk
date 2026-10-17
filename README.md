@@ -24,6 +24,12 @@ Determine which industries have higher default rates than the portfolio average 
 
 The findings of this project can aid in policy and risk mitigation direction for small business lending. Risk mitigation strategies could include implementing collateral requirements, requiring personal guarantees, or recalibrating industry concentration limits.
 
+## Data
+SBA FOIA 7(a) loan-level CSV files from https://data.sba.gov/dataset/7-a-504-foia.
+File: FY2010-FY2019, as-of date 2025-12-31. 545,751 total loans.
+ - FY2018-FY2019 records are loaded but excluded from analysis in the SQL view (05_create_view.sql).
+SBA updates this data quarterly, so you may see some slight variation in your data compared to mine if you download the most recent dataset.
+
 ## Scope
 Original time window for the project was FY2000-FY2019. This has been changed to **FY2010-2017** for two reasons: 
 1) The Small Business Jobs Act of 2010 permanently raised the 7(a) maximum loan size from $2M to $5M, so combining FY2000-2009 with FY2010-2019 would confound any analysis based on loan size. 
@@ -120,7 +126,7 @@ If you choose to tighten industry concentration, you could try to increase busin
 
 **When in doubt, request collateral.**
 
-Secured loans show a 35% lower odds of default than unsecured. Collateral is often required for riskier borrowers, so secured loans likely skew toward weaker credit profiles, which makes the lower default odds strong evidence that collateral works. Having secured loans would also give us priority in the event the borrower goes bankrupt. However, collateral_ind is only a flag without any details on what the collateral is or its value; further information would be needed to determine a procedure or criteria for what type or how much collateral needs to be requested.
+Secured loans show a 34% lower odds of default than unsecured. Collateral is often required for riskier borrowers, so secured loans likely skew toward weaker credit profiles, which makes the lower default odds strong evidence that collateral works. Having secured loans would also give us priority in the event the borrower goes bankrupt. However, collateral_ind is only a flag without any details on what the collateral is or its value; further information would be needed to determine a procedure or criteria for what type or how much collateral needs to be requested.
 
 **Decrease portfolio concentration in short-term loans and tighten qualification requirements for borrowers that need short-term loans.**
 
@@ -145,12 +151,6 @@ Short-term loans make up 22% of loans in the EDA data, though over 55% of short-
 
 - The model used a single pooled size slope for loan size across all NAICS sectors, so it could not test whether some industries are more sensitive to loan size than others.
 
-## Data
-SBA FOIA 7(a) loan-level CSV files from https://data.sba.gov/dataset/7-a-504-foia.
-File: FY2010-FY2019, as-of date 2025-12-31. 545,751 total loans.
- - FY2018-FY2019 records are loaded but excluded from analysis in the SQL view (05_create_view.sql).
-SBA updates this data quarterly, so you may see some slight variation in your data compared to mine if you download the most recent dataset.
-
 ## SQL Analysis
 1. **The short-term loan effect is not confounded with subprogram.** Short-term loans are most concentrated in FA$TRK (Small Loan Express) where they have a default rate of 17.43%, about 2ppts lower than the default rate across all short-term loans, 19.52%. Short-term loans also had substantially higher default rates (5ppts or more, typically in the double-digits) than the reference terms (61-84mo) in 10 of 12 subprogram groups, confirming the effect is spread across subprograms. If there was confounding, we'd expect a substantially higher default rate under FA$TRK while the rates under other subprograms sit closer to the reference's default rate.
 
@@ -164,7 +164,14 @@ Rates are marginal within each term bin. Chart color uses PowerNorm scale with g
 
 ![Size vs term bubble chart](image.png)
 
+## AI Use and Resources
+
+Claude Chat is regularly used for organization/planning, review, and learning more advanced/project-specific concepts. Perplexity and Google AI Mode were occasionally used for syntax help. The code, final analytical decisions (decisions.md), and final project ideas are my own. All suggestions from AI that were used in the project were evaluated/researched before implementing. The core of my learning came from DataCamp, which I earned two certifications from ("Associate Data Analyst" for PostgreSQL and "Python Data Associate").
+
+Other sources used include Stack Overflow, official Python package documentation, government sources (e.g. SBA, FDIC), and other miscellaneous resources such as W3Schools and published research papers.
+
 ## Setup
+Part 1: EDA and Logit Analysis
 1. Run sql/01_create_database.sql, sql/02_create_schema.sql, and sql/03_create_table.sql against a local PostgreSQL instance in that order.
 2. Run pip install -r requirements.txt in the terminal.
 3. Create a .env file with DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD.
@@ -176,6 +183,13 @@ Rates are marginal within each term bin. Chart color uses PowerNorm scale with g
 9. Run notebooks/02_exploratory_data_analysis.ipynb.
 10. Run sql/06_create_model_view.sql.
 11. Run 03_logistic_regression_model.ipynb.
+
+Part 2: Deeper SQL Analysis
 12. Run 07_subprograms.sql.
 13. Run 08.size_x_term.sql.
-14. Run 04_size_term_heatmap.ipynb
+14. Run 04_size_term_bubble.ipynb.
+
+Part 3: Vintage Curves
+15. Run vc_population_vw.sql.
+16. Run vc_spine.sql.
+17. Run vc_vintage_curves.sql.
