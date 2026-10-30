@@ -164,6 +164,14 @@ Rates are marginal within each term bin. Chart color uses PowerNorm scale with g
 
 ![Size vs term bubble chart](image.png)
 
+3. **Vintage Curves:** The cumulative charge-off rate (by loan count) for each vintage curve at age 24, the last age where all vintages are reported, exhibits a U-shape for the 2010-2019 cohort, with 2010 reporting the highest charge-off rate followed by the later years, 2017, 2018, and 2019. FY2010 had the highest rate of charge-offs out of all vintages by age 6, which is consistent with the post-recession economy.
+
+Lender-share gross losses average 1.8% (1.58%-2.03%) at age 24. FY2010 is higher at 2.8%.
+
+FY2010-2015 had 60.4% (59.4%-61.4%) of their age 40 charge-offs reported by quarter 20. I thought this would be due to the short-term loan effect found via EDA and the model, but the data did not support this theory. However, this does support the right-censoring concern I had that led to me removing FY2018 and FY2019 from EDA and the model. FY2018 and FY2019 are observed through quarters 28 and 24. At those ages, FY2010-2015 had not yet reported 16% and 26% of their age-40 charge-offs, so FY2018-2019 may be missing a similar share.
+
+![Vintage curves](image-1.png)
+
 ## AI Use and Resources
 
 Claude Chat is regularly used for organization/planning, review, and learning more advanced/project-specific concepts. Perplexity and Google AI Mode were occasionally used for syntax help. The code, final analytical decisions (decisions.md), and final project ideas are my own. All suggestions from AI that were used in the project were evaluated/researched before implementing. The core of my learning came from DataCamp, which I earned two certifications from ("Associate Data Analyst" for PostgreSQL and "Python Data Associate").
@@ -193,3 +201,4 @@ Part 3: Vintage Curves
 15. Run vc_population_vw.sql.
 16. Run vc_spine.sql.
 17. Run vc_vintage_curves.sql.
+18. Run vc_graphs.ipynb.
