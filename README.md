@@ -10,11 +10,11 @@
 
 - **Loan size impact on default rate has mixed signals**: Larger loans default less in the marginal data, while the logit shows 11% higher odds per doubling of size once term and other features are held constant. Term length is the confounder which drives the opposite effect in the marginal data.
 
+- **Lender-share gross losses average 1.8% (1.58%-2.03%) six years in for FY2011-2019.** With the SBA guarantee removed from the calculation, the percentage of cumulative charge-offs over all disbursed loans for the FY2011-2019 vintages is near 2%. FY2010's rate is higher at 2.8%.
+
 - **Priors were recorded before analysis**: Retail's elevated risk was confirmed; the loan size and Construction priors were partly disconfirmed.
 
 - **Recommendations**: Tighter controls and pricing on Retail, collateral requirements where credit quality is uncertain or borderline, and stricter acceptance criteria plus reduced concentration in short-term loans.
-
-- **Further Analyses**: Deeper analyses are being done in SQL with conclusions in the SQL Analysis section.
 
 ## About
 I am a B2B Credit Analyst working for a security firm that assesses the creditworthiness of small, medium, and large businesses/organizations. I am building this project to demonstrate how my domain knowledge can be augmented with and yield actionable outputs by using Python, SQL, and statistical modeling.
@@ -59,12 +59,16 @@ Overall, my expectation is that larger loan sizes will display higher default ra
 
     - Retail showed high sensitivity to loan size, with the risk of default decreasing by over half between the lowest and highest loan size decile.
 
+![NAICS Sector Default Rate Distribution](naics_distribution.png)
+
 - *Construction*
     - Construction's default rate was within the IQR of the default rate distribution between NAICS sectors. We narrowly failed to reject the hypothesis that Construction is not associated with default rate.
 
     - Construction's default rates ranged from 6.1%-10.1% between deciles. The 10.1% default rate was a part of a decile that contained outliers amongst many sectors. With that decile removed, we failed to reject the null hypothesis that the risk of default for Construction is not significantly associated with loan size.
 
     - In the logit, only six other industries showed higher odds of default than Construction, suggesting that Construction displays above-average risk when all other features are held constant.
+
+![Default Rates by Loan Size and Industry](size_naics_rates.png)
 
 **Term**
 - Term and loan size appear to be confounded. Loan size increases as term length increases, and default rate decreases as both increase. This may explain why the results from the marginal and conditional perspectives were at odds with each other; when all other features are held constant, loan size does increase default risk (by 11% for every doubling in size), but when confounders are in play, the risk lowers as size increases.
@@ -96,7 +100,11 @@ Overall, my expectation is that larger loan sizes will display higher default ra
 
 - Cross-validation showed AUCs ranged between 0.745 and 0.757 between five folds, indicating the score of 0.75 is stable.
 
+![ROC Curve](roc_curve.png)
+
 - The calibration curve showed that the predictions aligned closely to perfect calibration.
+
+![Calibration Curve](calibration_curve.png)
 
 - Variance Inflation Factor (VIF) measures how much each feature overlaps with the others. High overlap widens the uncertainty around individual coefficients in the model. No VIF exceeded 2.05 against a threshold of 5, so overlap is not distorting the estimates.
 
@@ -166,7 +174,7 @@ Rates are marginal within each term bin. Chart color uses PowerNorm scale with g
 
 3. **Vintage Curves:** The cumulative charge-off rate (by loan count) for each vintage curve at age 24, the last age where all vintages are reported, exhibits a U-shape for the 2010-2019 cohort, with 2010 reporting the highest charge-off rate followed by the later years, 2017, 2018, and 2019. FY2010 had the highest rate of charge-offs out of all vintages by age 6, which is consistent with the post-recession economy.
 
-Lender-share gross losses average 1.8% (1.58%-2.03%) at age 24. FY2010 is higher at 2.8%.
+Lender-share gross losses average 1.8% (1.58%-2.03%) at age 24 from FY2011-2019. FY2010 is higher at 2.8%.
 
 FY2010-2015 had 60.4% (59.4%-61.4%) of their age 40 charge-offs reported by quarter 20. I thought this would be due to the short-term loan effect found via EDA and the model, but the data did not support this theory. However, this does support the right-censoring concern I had that led to me removing FY2018 and FY2019 from EDA and the model. FY2018 and FY2019 are observed through quarters 28 and 24. At those ages, FY2010-2015 had not yet reported 16% and 26% of their age-40 charge-offs, so FY2018-2019 may be missing a similar share.
 
