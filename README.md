@@ -2,7 +2,7 @@
 ## Summary
 - **Data**: 348k terminal-status loans (paid in full or charged off) from FY2010-2017 analyzed via EDA and logistic regression.
 
-- **Model**: Unpenalized logit on term length, loan size (log2), NAICS sector, revolver status, and collateral. Held-out AUC is 0.75, stable across 5 folds (0.745-0.757), and is well-calibrated.
+- **Model**: Unpenalized logit on term length, loan size (log2), NAICS sector, revolver status, and collateral. Held-out AUC is 0.75, stable across 5 folds (0.745-0.757), and is well-calibrated. **Leakage identified in term_in_months in November, found in a paper released in the prior month (https://arxiv.org/pdf/2610.03259). The logit will be refit without term, and sections of this README will be rewritten accordingly.**
 
 - **Term dominates charge-off risk**: Loans with terms of 60 months or less carry about 6x higher odds of default than the reference, 61-84mo terms, and a 19.5% default rate against the 7.5% portfolio average. Subprograms are not confounded with terms.
 
@@ -26,9 +26,13 @@ The findings of this project can aid in policy and risk mitigation direction for
 
 ## Data
 SBA FOIA 7(a) loan-level CSV files from https://data.sba.gov/dataset/7-a-504-foia.
+
 File: FY2010-FY2019, as-of date 2025-12-31. 545,751 total loans.
  - FY2018-FY2019 records are loaded but excluded from analysis in the SQL view (05_create_view.sql).
+
 SBA updates this data quarterly, so you may see some slight variation in your data compared to mine if you download the most recent dataset.
+
+The Small Business Jobs Act increased the max loan size from $2MM to $5MM on Sep 27th, 2010, three days before FY2010 ended. Only 3% of loans during FY2011-2017 in the EDA dataset were over $2MM, indicating this likely has a limited effect on loan size findings. The model's dataset is close to identical to EDA's, so this applies to the model as well, although the model has not been refitted without 2010 to confirm.
 
 ## Scope
 Original time window for the project was FY2000-FY2019. This has been changed to **FY2010-2017** for two reasons: 
@@ -59,7 +63,7 @@ Overall, my expectation is that larger loan sizes will display higher default ra
 
     - Retail showed high sensitivity to loan size, with the risk of default decreasing by over half between the lowest and highest loan size decile.
 
-![NAICS Sector Default Rate Distribution](naics_distribution.png)
+![NAICS Sector Default Rate Distribution](docs/images/naics_distribution.png)
 
 - *Construction*
     - Construction's default rate was within the IQR of the default rate distribution between NAICS sectors. We narrowly failed to reject the hypothesis that Construction is not associated with default rate.
@@ -68,7 +72,7 @@ Overall, my expectation is that larger loan sizes will display higher default ra
 
     - In the logit, only six other industries showed higher odds of default than Construction, suggesting that Construction displays above-average risk when all other features are held constant.
 
-![Default Rates by Loan Size and Industry](size_naics_rates.png)
+![Default Rates by Loan Size and Industry](docs/images/size_naics_rates.png)
 
 **Term**
 - Term and loan size appear to be confounded. Loan size increases as term length increases, and default rate decreases as both increase. This may explain why the results from the marginal and conditional perspectives were at odds with each other; when all other features are held constant, loan size does increase default risk (by 11% for every doubling in size), but when confounders are in play, the risk lowers as size increases.
@@ -100,11 +104,11 @@ Overall, my expectation is that larger loan sizes will display higher default ra
 
 - Cross-validation showed AUCs ranged between 0.745 and 0.757 between five folds, indicating the score of 0.75 is stable.
 
-![ROC Curve](roc_curve.png)
+![ROC Curve](docs/images/roc_curve.png)
 
 - The calibration curve showed that the predictions aligned closely to perfect calibration.
 
-![Calibration Curve](calibration_curve.png)
+![Calibration Curve](docs/images/calibration_curve.png)
 
 - Variance Inflation Factor (VIF) measures how much each feature overlaps with the others. High overlap widens the uncertainty around individual coefficients in the model. No VIF exceeded 2.05 against a threshold of 5, so overlap is not distorting the estimates.
 
@@ -170,7 +174,7 @@ The smallest loans are elevated within most term bins, and the pattern at larger
 
 Rates are marginal within each term bin. Chart color uses PowerNorm scale with gamma set to 0.6.
 
-![Size vs term bubble chart](image.png)
+![Size vs term bubble chart](docs/images/size_term_bubble.png)
 
 3. **Vintage Curves:** The cumulative charge-off rate (by loan count) for each vintage curve at age 24, the last age where all vintages are reported, exhibits a U-shape for the 2010-2019 cohort, with 2010 reporting the highest charge-off rate followed by the later years, 2017, 2018, and 2019. FY2010 had the highest rate of charge-offs out of all vintages by age 6, which is consistent with the post-recession economy.
 
@@ -178,7 +182,7 @@ Lender-share gross losses average 1.8% (1.58%-2.03%) at age 24 from FY2011-2019.
 
 FY2010-2015 had 60.4% (59.4%-61.4%) of their age 40 charge-offs reported by quarter 20. I thought this would be due to the short-term loan effect found via EDA and the model, but the data did not support this theory. However, this does support the right-censoring concern I had that led to me removing FY2018 and FY2019 from EDA and the model. FY2018 and FY2019 are observed through quarters 28 and 24. At those ages, FY2010-2015 had not yet reported 16% and 26% of their age-40 charge-offs, so FY2018-2019 may be missing a similar share.
 
-![Vintage curves](image-1.png)
+![Vintage curves](docs/images/vintage_curves.png)
 
 ## AI Use and Resources
 
